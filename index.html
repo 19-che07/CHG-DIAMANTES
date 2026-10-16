@@ -8,6 +8,45 @@
 :root{--bg:#070b13;--panel:#101827;--panel2:#0c1422;--blue:#16a8ff;--cyan:#5de0ff;--text:#f4f8ff;--muted:#9caec4;--line:#20344d;--green:#25d366}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#12345b 0,transparent 42%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit}.wrap{width:min(1100px,92%);margin:auto}.top{padding:20px 0;border-bottom:1px solid #18314b;background:#070b13cc}.brand{font-weight:950;letter-spacing:1.5px;font-size:1.1rem}.brand span{color:var(--cyan)}.hero{padding:58px 0 38px;text-align:center}.eyebrow{display:inline-block;border:1px solid #1768a4;border-radius:99px;padding:7px 13px;color:var(--cyan);font-size:.78rem;font-weight:800;letter-spacing:1.2px}.hero h1{font-size:clamp(2.2rem,7vw,4.6rem);line-height:1.02;margin:18px 0 12px;letter-spacing:-2px}.hero h1 span{color:var(--cyan);text-shadow:0 0 25px #168bff55}.hero p{max-width:620px;margin:0 auto;color:var(--muted);font-size:1.05rem;line-height:1.65}.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}.btn{display:inline-flex;justify-content:center;align-items:center;text-decoration:none;border:1px solid #24557e;border-radius:12px;padding:12px 17px;font-weight:800;background:#10233a;transition:.15s}.btn.primary{background:linear-gradient(120deg,#087ee5,#17baff);border-color:#36bfff;color:white;box-shadow:0 8px 30px #078be533}.section{padding:28px 0 38px}.section-head{margin-bottom:20px}.section-head h2{font-size:1.65rem;margin:0 0 5px}.section-head p{margin:0;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{background:linear-gradient(160deg,#121e30,#0c1421);border:1px solid var(--line);border-radius:17px;padding:18px;display:flex;flex-direction:column;min-width:0;box-shadow:0 12px 32px #0002}.icon{height:45px;width:45px;border-radius:13px;display:grid;place-items:center;background:#0d2b46;border:1px solid #155784;font-size:1.35rem;margin-bottom:12px}.card h3{margin:0 0 6px;font-size:1.07rem}.card .desc{font-size:.88rem;color:var(--muted);margin:0 0 13px}.prices{display:grid;gap:8px;margin:0 0 16px}.price-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;background:#080f1a;border:1px solid #192b40;border-radius:9px;font-size:.9rem}.price-row strong{white-space:nowrap;color:var(--cyan)}.buy{margin-top:auto;width:100%;text-align:center;border:0;border-radius:10px;padding:11px;background:var(--green);color:#04240e;font-weight:900;text-decoration:none}.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.info{padding:18px;border:1px solid var(--line);border-radius:15px;background:#0e1725}.info h3{margin:0 0 7px;font-size:1rem}.info p{color:var(--muted);font-size:.9rem;line-height:1.55;margin:0}.yape-name{color:var(--cyan);font-weight:800}.notice{border:1px solid #604e21;background:#201b0e;color:#f6d98b;border-radius:12px;padding:13px 15px;margin-top:15px;font-size:.9rem;line-height:1.5}.footer{border-top:1px solid var(--line);padding:24px 0 36px;text-align:center;color:var(--muted);font-size:.85rem}.floating{position:fixed;right:16px;bottom:16px;z-index:4;background:var(--green);color:#06220f;padding:13px 17px;border-radius:99px;text-decoration:none;font-weight:900;box-shadow:0 8px 25px #0007}
 @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.info-grid{grid-template-columns:1fr}}@media(max-width:540px){.grid{grid-template-columns:1fr}.hero{padding:42px 0 25px}.card{padding:16px}.hero h1{letter-spacing:-1.2px}}
 </style>
+
+<style>
+.order-select{width:100%;margin:0 0 12px;padding:12px;border-radius:10px;border:1px solid #24557e;background:#080f1a;color:#f4f8ff;font:inherit;font-weight:700;}
+.order-label{display:block;margin:2px 0 7px;color:#9caec4;font-size:.86rem;font-weight:700;}
+.buy{cursor:pointer;font:inherit;}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.card').forEach((card)=>{
+    const rows=[...card.querySelectorAll('.price-row')];
+    const button=card.querySelector('.buy');
+    if(!button||!rows.length)return;
+    const label=document.createElement('label'); label.className='order-label'; label.textContent=rows.length>1?'Escoge la cantidad que deseas:':'Confirma tu producto:';
+    const select=document.createElement('select'); select.className='order-select';
+    rows.forEach((row,i)=>{
+      const option=document.createElement('option');
+      option.value=i;
+      option.textContent=row.querySelector('span')?.textContent.trim()+' — '+row.querySelector('strong')?.textContent.trim();
+      option.dataset.item=row.querySelector('span')?.textContent.trim()||'';
+      option.dataset.price=row.querySelector('strong')?.textContent.trim()||'';
+      select.appendChild(option);
+    });
+    label.htmlFor='order-'+Math.random().toString(36).slice(2); select.id=label.htmlFor;
+    button.before(label,select);
+    button.addEventListener('click',(event)=>{
+      event.preventDefault();
+      const opt=select.options[select.selectedIndex];
+      const title=card.querySelector('h3')?.textContent.trim()||'Producto';
+      const message=`Hola CHG DIAMANTES, quiero realizar una compra.
+Producto: ${title}
+Cantidad/opción: ${opt.dataset.item}
+Precio: ${opt.dataset.price}
+Mi ID de jugador (UID): `;
+      window.location.href='https://wa.me/51900437515?text='+encodeURIComponent(message);
+    });
+  });
+});
+</script>
+
 </head>
 <body>
 <header class="top"><div class="wrap brand">CHG <span>DIAMANTES</span></div></header>
