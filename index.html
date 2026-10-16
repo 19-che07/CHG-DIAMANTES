@@ -31,16 +31,26 @@ document.addEventListener('DOMContentLoaded',()=>{
       select.appendChild(option);
     });
     label.htmlFor='order-'+Math.random().toString(36).slice(2); select.id=label.htmlFor;
-    button.before(label,select);
+    const uidLabel=document.createElement('label'); uidLabel.className='order-label'; uidLabel.textContent='ID de jugador (UID) — obligatorio';
+    const uidInput=document.createElement('input'); uidInput.type='text'; uidInput.inputMode='numeric'; uidInput.autocomplete='off'; uidInput.placeholder='Escribe tu ID de Free Fire'; uidInput.required=true; uidInput.className='order-select'; uidInput.setAttribute('aria-label','ID de jugador de Free Fire obligatorio');
+    uidInput.style.marginBottom='12px';
+    const nickLabel=document.createElement('label'); nickLabel.className='order-label'; nickLabel.textContent='Nombre dentro del juego (opcional)';
+    const nickInput=document.createElement('input'); nickInput.type='text'; nickInput.autocomplete='off'; nickInput.placeholder='Tu apodo en Free Fire (opcional)'; nickInput.className='order-select'; nickInput.setAttribute('aria-label','Nombre dentro del juego opcional');
+    button.before(label,select,uidLabel,uidInput,nickLabel,nickInput);
     button.addEventListener('click',(event)=>{
       event.preventDefault();
+      const uid=uidInput.value.trim();
+      if(!uid){uidInput.focus();uidInput.setCustomValidity('Escribe tu ID de jugador antes de continuar.');uidInput.reportValidity();return;}
+      uidInput.setCustomValidity('');
       const opt=select.options[select.selectedIndex];
       const title=card.querySelector('h3')?.textContent.trim()||'Producto';
+      const nickname=nickInput.value.trim()||'No indicado';
       const message=`Hola CHG DIAMANTES, quiero realizar una compra.
 Producto: ${title}
 Cantidad/opción: ${opt.dataset.item}
 Precio: ${opt.dataset.price}
-Mi ID de jugador (UID): `;
+ID de jugador (UID): ${uid}
+Nombre dentro del juego: ${nickname}`;
       window.location.href='https://wa.me/51900437515?text='+encodeURIComponent(message);
     });
   });
